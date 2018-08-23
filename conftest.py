@@ -17,6 +17,7 @@ def app(request):
 
 @pytest.fixture(scope="session", autouse=True)
 def stop(request):
+    global fixture
     def fin():
         fixture.destroy()
     request.addfinalizer(fin)
