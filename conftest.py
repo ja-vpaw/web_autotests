@@ -1,8 +1,22 @@
 from fixture.application import Application
 import pytest
 
-@pytest.fixture(scope = "session")
+fixture = None
+
+@pytest.fixture()
 def app(request):
-    fixture = Application()
-    request.addfinalizer(fixture.destroy)
+    global fixture
+    if fixture is None:
+        print("Fixture is None")
+        fixture = Application()
+    else:
+        if not fixture.is_valid():
+            print("Fixture is not valid")
+            fixture = Application()
     return fixture
+
+@pytest.fixture(scope="session", autouse=True)
+def stop(request):
+    def fin():
+        fixture.destroy()
+    request.addfinalizer(fin)
